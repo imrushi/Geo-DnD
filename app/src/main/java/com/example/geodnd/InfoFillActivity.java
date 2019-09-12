@@ -19,7 +19,7 @@ public class InfoFillActivity extends AppCompatActivity {
 
     RadioGroup radioGroup;
     RadioButton rbButton;
-    EditText etDate;
+    static EditText etDate,etLocName;
     Button selectDate;
     DatePickerDialog datePickerDialog;
     int year;
@@ -81,7 +81,7 @@ public class InfoFillActivity extends AppCompatActivity {
         radioGroup = findViewById(R.id.radioGroup);
         etDate = findViewById(R.id.etDate);
         selectDate = findViewById(R.id.selectDate);
-
+        etLocName = (EditText) findViewById(R.id.etLocName);
         // Drop down option
         dropDown = (Spinner)findViewById(R.id.dropDown);
 

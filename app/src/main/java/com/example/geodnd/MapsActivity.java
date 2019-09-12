@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentActivity;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,7 +22,10 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -29,9 +33,12 @@ import com.google.android.gms.tasks.Task;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener {
 
     private GoogleMap mMap;
+    private Marker marker;
+    private Circle marker1;
+    static String address;
 
     private static final String TAG = "MapActivity";
     private FusedLocationProviderClient mFusedLocationProviderClient;
@@ -163,11 +170,34 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Toast.makeText(this,"Log Press To Add Markar",Toast.LENGTH_SHORT).show();
         mMap = googleMap;
 
+        mMap.setOnMapLongClickListener(this);
+
         if (mLocationPermissionsGranted){
             getDeviceLocation();
 
             mMap.setMyLocationEnabled(true);
 
         }
+    }
+
+    @Override
+    public void onMapLongClick(LatLng latLng) {
+        address = latLng.latitude + "," + latLng.longitude;
+
+        InfoFillActivity.etLocName.setText(address);
+
+        Toast.makeText(this,"Location Saved", Toast.LENGTH_SHORT).show();
+
+        if (marker != null) {
+            marker.remove();
+            marker1.remove();
+        }
+        marker = mMap.addMarker(new MarkerOptions().position(latLng).title(address));
+        marker1 = mMap.addCircle(new CircleOptions()
+                .center(latLng)
+                .radius(500.0)
+                .strokeWidth(3f)
+                .strokeColor(Color.RED)
+                .fillColor(Color.argb(70,150,50,50)));
     }
 }
