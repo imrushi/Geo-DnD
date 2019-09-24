@@ -30,6 +30,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
+import java.text.DecimalFormat;
+
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
 
@@ -182,6 +184,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onMapLongClick(LatLng latLng) {
+
         address = latLng.latitude + "," + latLng.longitude;
 
         InfoFillActivity.etLocName.setText(address);

@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -12,20 +13,25 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import java.util.Calendar;
 
 public class InfoFillActivity extends AppCompatActivity {
-
+    DatabaseHelper mDatabaseHelper;
     RadioGroup radioGroup;
     RadioButton rbButton;
-    static EditText etDate,etLocName;
-    Button selectDate;
+    static EditText etLocName;
+    EditText etDate,etNameTask,etRadius;
+    Button selectDate,Save;
     DatePickerDialog datePickerDialog;
     int year;
     int month;
     int day;
     Calendar calendar;
+    String drd;
+    private static final String TAG = "InfoFillActivity";
+
 
     CustomAdapter adapter;
     Spinner dropDown;
@@ -36,17 +42,23 @@ public class InfoFillActivity extends AppCompatActivity {
     public void checkButton(View view){
 
         int radioId = radioGroup.getCheckedRadioButtonId();
-        rbButton = findViewById(radioId);
+        rbButton = (RadioButton) findViewById(radioId);
+        boolean dailyDate = ((RadioButton) view).isChecked();
 
         switch (view.getId()){
             case R.id.rbDate:
                 etDate.setVisibility(View.VISIBLE);
                 selectDate.setVisibility(View.VISIBLE);
+                if (dailyDate)
+                    drd = etDate.getText().toString();
                 break;
 
             case R.id.rbDaily:
                 etDate.setVisibility(View.INVISIBLE);
                 selectDate.setVisibility(View.INVISIBLE);
+                if (dailyDate)
+                    drd = "Daily";
+                break;
         }
 
     }
@@ -78,16 +90,52 @@ public class InfoFillActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_info_fill);
 
-        radioGroup = findViewById(R.id.radioGroup);
-        etDate = findViewById(R.id.etDate);
-        selectDate = findViewById(R.id.selectDate);
+        mDatabaseHelper = new DatabaseHelper(this);
+
+        radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
+        etDate = (EditText) findViewById(R.id.etDate);
+        selectDate = (Button) findViewById(R.id.selectDate);
         etLocName = (EditText) findViewById(R.id.etLocName);
+        etNameTask = (EditText)findViewById(R.id.etNameTask);
+        etRadius = (EditText)findViewById(R.id.etRadius);
+        Save = (Button)findViewById(R.id.Save);
         // Drop down option
         dropDown = (Spinner)findViewById(R.id.dropDown);
 
         adapter = new CustomAdapter(this,states,icons);
 
         dropDown.setAdapter(adapter);
+
+        AddData();
+
+    }
+
+    private void tostMessage(String message){
+        Toast.makeText(this,message,Toast.LENGTH_SHORT).show();
+    }
+
+
+    public void AddData(){
+        Save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String newName = etNameTask.getText().toString();
+                String dd = drd;
+                String state = dropDown.getSelectedItem().toString();
+                int radius = Integer.parseInt(etRadius.getText().toString());
+                String loc = etLocName.getText().toString();
+
+                Log.d(TAG, "onClick: "+ newName + " ," + dd + " ,"+ state + " ,"+ radius + " ,"+ loc );
+                boolean insertData = mDatabaseHelper.addData(newName,dd,state,radius,loc);
+
+                if (insertData){
+                    Toast.makeText(InfoFillActivity.this,"Data Successfully Inserted!",Toast.LENGTH_SHORT).show();
+                }else
+                {
+                    Toast.makeText(InfoFillActivity.this,"Something went Wrong!",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
     }
 }
