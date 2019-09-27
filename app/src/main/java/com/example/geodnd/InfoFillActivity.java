@@ -35,7 +35,7 @@ public class InfoFillActivity extends AppCompatActivity {
 
     CustomAdapter adapter;
     Spinner dropDown;
-    String[] states = {"General", "Slient", "Vibrate", "DnD"};
+    String[] states = {"General", "Silent", "Vibrate", "DnD"};
     int[] icons = {R.drawable.ic_general,R.drawable.ic_silent,R.drawable.ic_vibrate,R.drawable.ic_dnd};
 
     // select Daily or Date
@@ -43,23 +43,27 @@ public class InfoFillActivity extends AppCompatActivity {
 
         int radioId = radioGroup.getCheckedRadioButtonId();
         rbButton = (RadioButton) findViewById(radioId);
-        boolean dailyDate = ((RadioButton) view).isChecked();
+
+        //boolean dailyDate = ((RadioButton) view).isChecked();
 
         switch (view.getId()){
             case R.id.rbDate:
-                etDate.setVisibility(View.VISIBLE);
-                selectDate.setVisibility(View.VISIBLE);
-                if (dailyDate)
-                    drd = etDate.getText().toString();
+                //etDate.setVisibility(View.VISIBLE);
+               // selectDate.setVisibility(View.VISIBLE);
+               // if (rbButton.getText().equals(dat))
+               //    drd = etDate.getText().toString();
+                //Log.d(TAG, "checkButton: "+ drd);
                 break;
 
             case R.id.rbDaily:
-                etDate.setVisibility(View.INVISIBLE);
-                selectDate.setVisibility(View.INVISIBLE);
-                if (dailyDate)
+                //etDate.setVisibility(View.INVISIBLE);
+               // selectDate.setVisibility(View.INVISIBLE);
+               // if (rbButton.getText().equals(da))
                     drd = "Daily";
+                Log.d(TAG, "checkButton: "+ drd);
                 break;
         }
+
 
     }
     // Calander button
@@ -77,6 +81,7 @@ public class InfoFillActivity extends AppCompatActivity {
                     }
                 }, year, month, day);
         datePickerDialog.show();
+
     }
 
     public void Gmap(View view){
@@ -114,17 +119,23 @@ public class InfoFillActivity extends AppCompatActivity {
         Toast.makeText(this,message,Toast.LENGTH_SHORT).show();
     }
 
-
     public void AddData(){
+
         Save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+              /*  if (drd.equals(""))
+                {
+                    drd = etDate.getText().toString();
+                }else {
+                    drd = "Daily";
+                } */
+                Log.d(TAG, "checkButton: " + drd);
                 String newName = etNameTask.getText().toString();
                 String dd = drd;
                 String state = dropDown.getSelectedItem().toString();
                 int radius = Integer.parseInt(etRadius.getText().toString());
                 String loc = etLocName.getText().toString();
-
                 Log.d(TAG, "onClick: "+ newName + " ," + dd + " ,"+ state + " ,"+ radius + " ,"+ loc );
                 boolean insertData = mDatabaseHelper.addData(newName,dd,state,radius,loc);
 
@@ -134,8 +145,8 @@ public class InfoFillActivity extends AppCompatActivity {
                 {
                     Toast.makeText(InfoFillActivity.this,"Something went Wrong!",Toast.LENGTH_SHORT).show();
                 }
+                MainActivity.adapter.notifyAll();
             }
         });
-
     }
 }

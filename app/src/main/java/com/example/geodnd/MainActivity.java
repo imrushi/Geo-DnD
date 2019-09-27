@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -23,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
 
     ActionBar actionBar;
     DatabaseHelper mDatabaseHelper;
+    static ListAdapter adapter;
     private ListView mListView;
 
     private static final String TAG = "MainActivity";
@@ -60,8 +62,43 @@ public class MainActivity extends AppCompatActivity {
             listData.add(data.getString(1));
         }
         //create the list adapter and set the adapter
-        ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,listData);
+        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,listData);
         mListView.setAdapter(adapter);
+
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long id) {
+                String name = adapterView.getItemAtPosition(i).toString();
+                Log.d(TAG,"onItemClick: You Clicked on " + name);
+
+                Cursor data = mDatabaseHelper.getItemID(name); //get the id associated with that name
+                int itemID = -1;
+                String pstate = "";
+                int Radius = -1;
+                String Latlong = "";
+                while (data.moveToNext()){
+                    itemID = data.getInt(0);
+                    pstate = data.getString(3);
+                    Radius = data.getInt(4);
+                    Latlong = data.getString(5);
+                }
+                Log.d(TAG, "onItemClick: "+Radius);
+                if (itemID > -1){
+                    Log.d(TAG, "onItemClick: The ID is: " + itemID);
+                    Intent editScreenIntent = new Intent(MainActivity.this,EditDataActivity.class);
+                    editScreenIntent.putExtra("id",itemID);
+                    editScreenIntent.putExtra("name",name);
+                    editScreenIntent.putExtra("state",pstate);
+                    editScreenIntent.putExtra("radius",Radius);
+                    editScreenIntent.putExtra("latlong",Latlong);
+                    startActivity(editScreenIntent);
+                }
+                else {
+                    Toast.makeText(MainActivity.this,"No ID associated with that name",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
     }
 
     public boolean isServicesOK(){

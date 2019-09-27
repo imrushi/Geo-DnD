@@ -68,4 +68,32 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Cursor data = db.rawQuery(query, null);
         return data;
     }
+
+    //Return only ID that matches the name passed in
+    public Cursor getItemID(String name){
+        SQLiteDatabase db = this.getWritableDatabase();
+       // String query = "SELECT " + COL1 +"," + TaskName + "," + Date +"," + pState + "," + Radius +"," + Latlong + " FROM " + TABLE_NAME + " WHERE " + TaskName + " = '" + name + "'";
+       // String query = "SELECT " + COL1 +" FROM " + TABLE_NAME + " WHERE " + TaskName + " = '" + name + "'";
+        String query = "SELECT * FROM " + TABLE_NAME + " WHERE " + TaskName + " = '" + name + "'";
+        Cursor data = db.rawQuery(query,null);
+        return data;
+    }
+
+    public void updateName(String item,int id,String oldName,String state,int rad,String loc){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "UPDATE " + TABLE_NAME + " SET "+ TaskName + " = '" + item + "'," + pState + " = '" + state +"'," + Radius +" = '" + rad +"'," + Latlong + " = '" + loc +"' WHERE " + COL1 + " = '" + id + "'" + " AND " + TaskName + " = '"+ oldName + "'";
+       // String query = "UPDATE " + TABLE_NAME + " SET "+ TaskName + " = '" + item + "' WHERE " + COL1 + " = '" + id + "'" + " AND " + TaskName + " = '"+ oldName + "'";
+        Log.d(TAG, "updateName: query:" + query);
+        Log.d(TAG, "updateName: Setting name to " + item);
+        db.execSQL(query);
+    }
+
+    public void deleteName(int id, String name){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "DELETE FROM " + TABLE_NAME + " WHERE " + COL1 + " = '" + id + "'" + " AND "+ TaskName + " = '" + name + "'";
+        Log.d(TAG, "deleteName: query: "+ query);
+        Log.d(TAG, "deleteName: Deleting "+ name + " from database.");
+        db.execSQL(query);
+    }
+
 }
