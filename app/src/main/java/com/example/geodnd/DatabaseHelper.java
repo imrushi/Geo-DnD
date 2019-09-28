@@ -79,9 +79,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return data;
     }
 
-    public void updateName(String item,int id,String oldName,String state,int rad,String loc){
+    public void updateName(String item,int id,String oldName,String dailydate,String state,int rad,String loc){
         SQLiteDatabase db = this.getWritableDatabase();
-        String query = "UPDATE " + TABLE_NAME + " SET "+ TaskName + " = '" + item + "'," + pState + " = '" + state +"'," + Radius +" = '" + rad +"'," + Latlong + " = '" + loc +"' WHERE " + COL1 + " = '" + id + "'" + " AND " + TaskName + " = '"+ oldName + "'";
+        String query = "UPDATE " + TABLE_NAME + " SET "+ TaskName + " = '" + item + "'," + Date + " = '" + dailydate + "',"+ pState + " = '" + state +"'," + Radius +" = '" + rad +"'," + Latlong + " = '" + loc +"' WHERE " + COL1 + " = '" + id + "'" + " AND " + TaskName + " = '"+ oldName + "'";
        // String query = "UPDATE " + TABLE_NAME + " SET "+ TaskName + " = '" + item + "' WHERE " + COL1 + " = '" + id + "'" + " AND " + TaskName + " = '"+ oldName + "'";
         Log.d(TAG, "updateName: query:" + query);
         Log.d(TAG, "updateName: Setting name to " + item);

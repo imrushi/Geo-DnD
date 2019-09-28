@@ -7,29 +7,33 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import java.util.Calendar;
 
-public class InfoFillActivity extends AppCompatActivity {
+public class InfoFillActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener {
     DatabaseHelper mDatabaseHelper;
-    RadioGroup radioGroup;
-    RadioButton rbButton;
+
     static EditText etLocName;
     EditText etDate,etNameTask,etRadius;
     Button selectDate,Save;
     DatePickerDialog datePickerDialog;
+    Switch dateSwitch;
+
     int year;
     int month;
     int day;
     Calendar calendar;
-    String drd;
+    String drd = "Daily";
     private static final String TAG = "InfoFillActivity";
 
 
@@ -39,7 +43,7 @@ public class InfoFillActivity extends AppCompatActivity {
     int[] icons = {R.drawable.ic_general,R.drawable.ic_silent,R.drawable.ic_vibrate,R.drawable.ic_dnd};
 
     // select Daily or Date
-    public void checkButton(View view){
+  /*  public void checkButton(View view){
 
         int radioId = radioGroup.getCheckedRadioButtonId();
         rbButton = (RadioButton) findViewById(radioId);
@@ -63,9 +67,7 @@ public class InfoFillActivity extends AppCompatActivity {
                 Log.d(TAG, "checkButton: "+ drd);
                 break;
         }
-
-
-    }
+    }*/
     // Calander button
     public void pickDate(View view) {
         calendar = Calendar.getInstance();
@@ -97,7 +99,6 @@ public class InfoFillActivity extends AppCompatActivity {
 
         mDatabaseHelper = new DatabaseHelper(this);
 
-        radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
         etDate = (EditText) findViewById(R.id.etDate);
         selectDate = (Button) findViewById(R.id.selectDate);
         etLocName = (EditText) findViewById(R.id.etLocName);
@@ -106,13 +107,30 @@ public class InfoFillActivity extends AppCompatActivity {
         Save = (Button)findViewById(R.id.Save);
         // Drop down option
         dropDown = (Spinner)findViewById(R.id.dropDown);
-
+        dateSwitch = (Switch)findViewById(R.id.switchDD);
         adapter = new CustomAdapter(this,states,icons);
 
         dropDown.setAdapter(adapter);
 
+        dateSwitch.setOnCheckedChangeListener(this);
+
         AddData();
 
+    }
+
+    public void onCheckedChanged (CompoundButton buttonView, boolean isChecked){
+
+        switch (buttonView.getId()) {
+            case R.id.switchDD:
+                if (isChecked == true) {
+                    etDate.setVisibility(View.VISIBLE);
+                    selectDate.setVisibility(View.VISIBLE);
+                } else {
+                    etDate.setVisibility(View.INVISIBLE);
+                    selectDate.setVisibility(View.INVISIBLE);
+                }
+                break;
+        }
     }
 
     private void tostMessage(String message){
@@ -124,12 +142,16 @@ public class InfoFillActivity extends AppCompatActivity {
         Save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-              /*  if (drd.equals(""))
-                {
+
+                Switch dayTypeSwitch = (Switch)findViewById(R.id.switchDD);
+
+                Log.d(TAG, "onClick: Switch value::" + dayTypeSwitch.isChecked());
+
+                if (dayTypeSwitch.isChecked()){
+
                     drd = etDate.getText().toString();
-                }else {
-                    drd = "Daily";
-                } */
+                }
+
                 Log.d(TAG, "checkButton: " + drd);
                 String newName = etNameTask.getText().toString();
                 String dd = drd;
@@ -145,7 +167,7 @@ public class InfoFillActivity extends AppCompatActivity {
                 {
                     Toast.makeText(InfoFillActivity.this,"Something went Wrong!",Toast.LENGTH_SHORT).show();
                 }
-                MainActivity.adapter.notifyAll();
+      //          MainActivity.madapter.notifyDataSetChanged();
             }
         });
     }

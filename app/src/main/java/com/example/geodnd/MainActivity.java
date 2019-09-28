@@ -1,7 +1,9 @@
 package com.example.geodnd;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.app.Dialog;
 import android.content.Intent;
@@ -11,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -24,19 +27,12 @@ public class MainActivity extends AppCompatActivity {
 
     ActionBar actionBar;
     DatabaseHelper mDatabaseHelper;
-    static ListAdapter adapter;
+    static ListAdapter madapter;
     private ListView mListView;
+    SwipeRefreshLayout swipeRefreshLayout;
 
     private static final String TAG = "MainActivity";
     private static final int ERROR_DIALOG_REQUEST = 9001;
-
-    public void fabClick(View view){
-
-        Intent intent = new Intent(getApplicationContext(), InfoFillActivity.class);
-
-        startActivity(intent);
-
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,8 +40,24 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         mListView = (ListView)findViewById(R.id.lvToDoList);
         mDatabaseHelper = new DatabaseHelper(this);
+        swipeRefreshLayout = findViewById(R.id.SwipeRefresh);
 
         populateListView();
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                populateListView();
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
+    }
+
+    public void fabClick(View view){
+
+        Intent intent = new Intent(getApplicationContext(), InfoFillActivity.class);
+
+        startActivity(intent);
 
     }
 
@@ -62,8 +74,8 @@ public class MainActivity extends AppCompatActivity {
             listData.add(data.getString(1));
         }
         //create the list adapter and set the adapter
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,listData);
-        mListView.setAdapter(adapter);
+        madapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,listData);
+        mListView.setAdapter(madapter);
 
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -76,8 +88,10 @@ public class MainActivity extends AppCompatActivity {
                 String pstate = "";
                 int Radius = -1;
                 String Latlong = "";
+                String dd = "";
                 while (data.moveToNext()){
                     itemID = data.getInt(0);
+                    dd = data.getString(2);
                     pstate = data.getString(3);
                     Radius = data.getInt(4);
                     Latlong = data.getString(5);
@@ -88,6 +102,7 @@ public class MainActivity extends AppCompatActivity {
                     Intent editScreenIntent = new Intent(MainActivity.this,EditDataActivity.class);
                     editScreenIntent.putExtra("id",itemID);
                     editScreenIntent.putExtra("name",name);
+                    editScreenIntent.putExtra("dd",dd);
                     editScreenIntent.putExtra("state",pstate);
                     editScreenIntent.putExtra("radius",Radius);
                     editScreenIntent.putExtra("latlong",Latlong);

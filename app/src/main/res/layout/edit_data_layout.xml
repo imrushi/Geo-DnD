@@ -36,39 +36,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.093" />
 
-    <RadioGroup
-        android:id="@+id/radioGroup"
-        android:layout_width="217dp"
-        android:layout_height="61dp"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.082"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.274">
-
-        <RadioButton
-            android:id="@+id/rbDaily"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:onClick="checkButton"
-            android:text="Daily"
-            android:textColor="#ff141414"
-            android:textSize="18sp" />
-
-        <RadioButton
-            android:id="@+id/rbDate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:onClick="checkButton"
-            android:text="Date"
-            android:textColor="#ff141414"
-            android:textSize="18sp" />
-    </RadioGroup>
-
     <TextView
         android:id="@+id/tvDaliyDate"
         android:layout_width="wrap_content"
@@ -92,7 +59,7 @@
         android:hint="Select Date"
         android:inputType="textPersonName"
         android:textAlignment="center"
-        android:visibility="invisible"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.536"
@@ -107,7 +74,7 @@
         android:background="#FF9800"
         android:foreground="@android:drawable/ic_menu_my_calendar"
         android:onClick="pickDate"
-        android:visibility="invisible"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.875"
@@ -255,5 +222,41 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.95" />
+    <Switch
+        android:id="@+id/switchDD"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:theme="@style/SwitchTheme"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.286" />
+
+    <TextView
+        android:id="@+id/tvDaily"
+        android:layout_width="34dp"
+        android:layout_height="27dp"
+        android:text="Daily"
+        android:textColor="#CB000000"
+        app:layout_constraintBottom_toTopOf="@+id/dropDown"
+        app:layout_constraintEnd_toStartOf="@+id/switchDD"
+        app:layout_constraintHorizontal_bias="0.96"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.615" />
+
+    <TextView
+        android:id="@+id/tvDate"
+        android:layout_width="34dp"
+        android:layout_height="27dp"
+        android:text="Date"
+        android:textColor="#CB000000"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.059"
+        app:layout_constraintStart_toEndOf="@+id/switchDD"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.286" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

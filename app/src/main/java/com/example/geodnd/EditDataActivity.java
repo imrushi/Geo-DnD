@@ -7,11 +7,13 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,15 +22,15 @@ import com.example.geodnd.R;
 
 import java.util.Calendar;
 
-public class EditDataActivity extends AppCompatActivity {
+public class EditDataActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener{
     DatabaseHelper mDatabaseHelper;
     EditText etLocName;
     EditText etDate,etNameTask,etRadius;
     Button selectDate,Delete,Save;
-    RadioGroup radioGroup;
-    RadioButton rbButton;
-    private String selectedName,selectedState,selectedLatlong;
+    Switch dateSwitch;
+    private String selectedName,selectedState,selectedLatlong,selectedDD;
     private int selectedID,selectedRadius;
+    String dailydate;
 
     DatePickerDialog datePickerDialog;
     int year;
@@ -45,21 +47,12 @@ public class EditDataActivity extends AppCompatActivity {
     int[] icons = {R.drawable.ic_general,R.drawable.ic_silent,R.drawable.ic_vibrate,R.drawable.ic_dnd};
 
     // select Daily or Date
-    public void checkButton(View view){
+  /*  public void checkButton(View view){
 
         int radioId = radioGroup.getCheckedRadioButtonId();
         rbButton = (RadioButton) findViewById(radioId);
-        String da = "Daily";
-        String dat = "Date";
         boolean dailyDate = ((RadioButton) view).isChecked();
 
-        if (da == rbButton.getText())
-        {
-            drd = "Daily";
-        }
-        else {
-            drd = etDate.getText().toString();
-        }
 
         switch (view.getId()){
             case R.id.rbDate:
@@ -77,7 +70,7 @@ public class EditDataActivity extends AppCompatActivity {
                 break;
         }
 
-    }
+    }*/
     // Calander button
     public void pickDate(View view) {
         calendar = Calendar.getInstance();
@@ -113,13 +106,25 @@ public class EditDataActivity extends AppCompatActivity {
         dropDown = (Spinner)findViewById(R.id.dropDown);
         Save = (Button)findViewById(R.id.Save);
         Delete = (Button)findViewById(R.id.Delete);
-
+        dateSwitch = (Switch)findViewById(R.id.switchDD);
         adapter = new CustomAdapter(this,states,icons);
 
         dropDown.setAdapter(adapter);
-
+        dateSwitch.setOnCheckedChangeListener(this);
         btnAddUp();
 
+    }
+    public void onCheckedChanged (CompoundButton buttonView, boolean isChecked){
+
+        switch (buttonView.getId()) {
+            case R.id.switchDD:
+                if (isChecked == false) {
+                    etDate.setText("");
+                } else {
+
+                }
+                break;
+        }
     }
 
     public void btnAddUp(){
@@ -130,14 +135,37 @@ public class EditDataActivity extends AppCompatActivity {
         selectedState = receivedIntent.getStringExtra("state");
         selectedRadius = receivedIntent.getIntExtra("radius",-1);
         selectedLatlong = receivedIntent.getStringExtra("latlong");
+        selectedDD = receivedIntent.getStringExtra("dd");
+
+
+
         Log.d(TAG, "btnAddUp: "+ selectedLatlong);
         etNameTask.setText(selectedName);
-//        etRadius.setText(selectedRadius);
+        etRadius.setText("1000");
         etLocName.setText(selectedLatlong);
+        if (!selectedDD.equals("Daily")){
+            dateSwitch.setChecked(true);
+            etDate.setText(selectedDD);
+            dailydate = etDate.getText().toString();
+        }
+        else {
+            dateSwitch.setChecked(false);
+            dailydate = "Daily";
+        }
+
+
 
         Save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Switch dayTypeSwitch = (Switch)findViewById(R.id.switchDD);
+                if (dayTypeSwitch.isChecked()){
+
+                    dailydate = etDate.getText().toString();
+                }
+                else {
+                    dailydate = "Daily";
+                }
                String state = dropDown.getSelectedItem().toString();
                int rad = Integer.parseInt(etRadius.getText().toString());
                String item = etNameTask.getText().toString();
@@ -145,8 +173,8 @@ public class EditDataActivity extends AppCompatActivity {
                String loc = etLocName.getText().toString();
                // && rad != 0 && !loc.equals("")
                 if (!item.equals("") ){
-                    mDatabaseHelper.updateName(item,selectedID,selectedName,state,rad,loc);
-                    MainActivity.adapter.notify();
+                    mDatabaseHelper.updateName(item,selectedID,selectedName,dailydate,state,rad,loc);
+                   // MainActivity.adapter.notify();
                 }else {
                     Toast.makeText(EditDataActivity.this,"You must fill all fields",Toast.LENGTH_SHORT).show();
                 }
@@ -159,7 +187,7 @@ public class EditDataActivity extends AppCompatActivity {
             public void onClick(View v) {
                 mDatabaseHelper.deleteName(selectedID,selectedName);
                 Toast.makeText(EditDataActivity.this,"Record Deleted From Database",Toast.LENGTH_SHORT).show();
-                MainActivity.adapter.notify();
+                //MainActivity.adapter.notify();
             }
         });
     }
