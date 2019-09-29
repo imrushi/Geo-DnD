@@ -214,6 +214,7 @@
         android:id="@+id/switchDD"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColorLink="#3C3F41"
         android:theme="@style/SwitchTheme"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

@@ -137,11 +137,13 @@ public class EditDataActivity extends AppCompatActivity implements CompoundButto
         selectedLatlong = receivedIntent.getStringExtra("latlong");
         selectedDD = receivedIntent.getStringExtra("dd");
 
-
-
         Log.d(TAG, "btnAddUp: "+ selectedLatlong);
         etNameTask.setText(selectedName);
-        etRadius.setText("1000");
+        etRadius.setText(""+selectedRadius);
+        if (selectedState != null) {
+            int spinnerPosition = adapter.getPosition(selectedState);
+            dropDown.setSelection(spinnerPosition);
+        }
         etLocName.setText(selectedLatlong);
         if (!selectedDD.equals("Daily")){
             dateSwitch.setChecked(true);
@@ -174,6 +176,7 @@ public class EditDataActivity extends AppCompatActivity implements CompoundButto
                // && rad != 0 && !loc.equals("")
                 if (!item.equals("") ){
                     mDatabaseHelper.updateName(item,selectedID,selectedName,dailydate,state,rad,loc);
+                    Toast.makeText(EditDataActivity.this,"Data updated Successfully!!",Toast.LENGTH_SHORT).show();
                    // MainActivity.adapter.notify();
                 }else {
                     Toast.makeText(EditDataActivity.this,"You must fill all fields",Toast.LENGTH_SHORT).show();
@@ -186,7 +189,7 @@ public class EditDataActivity extends AppCompatActivity implements CompoundButto
             @Override
             public void onClick(View v) {
                 mDatabaseHelper.deleteName(selectedID,selectedName);
-                Toast.makeText(EditDataActivity.this,"Record Deleted From Database",Toast.LENGTH_SHORT).show();
+                Toast.makeText(EditDataActivity.this,"Record Deleted Successfully!!",Toast.LENGTH_SHORT).show();
                 //MainActivity.adapter.notify();
             }
         });
