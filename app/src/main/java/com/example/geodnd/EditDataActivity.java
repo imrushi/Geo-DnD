@@ -24,7 +24,7 @@ import java.util.Calendar;
 
 public class EditDataActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener{
     DatabaseHelper mDatabaseHelper;
-    EditText etLocName;
+    static EditText etLocName;
     EditText etDate,etNameTask,etRadius;
     Button selectDate,Delete,Save;
     Switch dateSwitch;
@@ -89,8 +89,11 @@ public class EditDataActivity extends AppCompatActivity implements CompoundButto
     }
 
     public void Gmap(View view){
+        String setRadius = "";
+        setRadius = etRadius.getText().toString();
+        Log.d(TAG, "Gmap: setRadius:"+setRadius);
         Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
-
+        intent.putExtra("setRadius",setRadius);
         startActivity(intent);
     }
 

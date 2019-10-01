@@ -39,9 +39,9 @@ import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener {
 
-    private GoogleMap mMap;
-    private Marker marker;
-    private Circle marker1;
+    static GoogleMap mMap;
+     static Marker marker;
+     static Circle marker1;
     static String address;
 
     private static final String TAG = "MapActivity";
@@ -199,6 +199,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         address = lat + "," + lon;
 
         InfoFillActivity.etLocName.setText(address);
+  //      EditDataActivity.etLocName.setText(address);
 
         Toast.makeText(this,"Location Saved", Toast.LENGTH_SHORT).show();
 

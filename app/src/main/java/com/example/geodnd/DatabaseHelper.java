@@ -69,6 +69,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return data;
     }
 
+    public Cursor getLatlon(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "SELECT * FROM " + TABLE_NAME;
+        Cursor data = db.rawQuery(query, null);
+        return data;
+    }
+
     //Return only ID that matches the name passed in
     public Cursor getItemID(String name){
         SQLiteDatabase db = this.getWritableDatabase();
