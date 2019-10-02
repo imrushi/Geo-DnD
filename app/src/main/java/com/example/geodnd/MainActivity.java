@@ -2,16 +2,26 @@ package com.example.geodnd;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.Manifest;
 import android.app.ActivityManager;
 import android.app.Dialog;
+import android.app.NotificationManager;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
@@ -43,6 +53,21 @@ public class MainActivity extends AppCompatActivity {
         mDatabaseHelper = new DatabaseHelper(this);
         swipeRefreshLayout = findViewById(R.id.SwipeRefresh);
         startLocationService();
+        NotificationManager notificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
+                && !notificationManager.isNotificationPolicyAccessGranted()) {
+
+            Intent intent = new Intent(
+                    android.provider.Settings
+                            .ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
+
+            startActivity(intent);
+        }
+
+        //getAccessPermission();
+
         populateListView();
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -53,6 +78,35 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+   /* private void getAccessPermission() {
+        Log.d(TAG, "getAccessPermission: Notification permission");
+        //String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION,
+          //      Manifest.permission.ACCESS_COARSE_LOCATION};
+        AlertDialog.Builder builder=new AlertDialog.Builder(this);
+        builder.setTitle("Permissions");
+        builder.setMessage("Give Prmission for auto DND & other modes:");
+        builder.setPositiveButton("Asscess", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                NotificationManager notificationManager =
+                        (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
+                        && !notificationManager.isNotificationPolicyAccessGranted()) {
+
+                    Intent intent = new Intent(
+                            android.provider.Settings
+                                    .ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
+
+                    startActivity(intent);
+                }
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_DIALOG);
+        dialog.show();
+    }*/
 
     private void startLocationService(){
         if(!isLocationServiceRunning()){
@@ -79,6 +133,7 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "isLocationServiceRunning: location service is not running.");
         return false;
     }
+
 
     public void fabClick(View view){
 

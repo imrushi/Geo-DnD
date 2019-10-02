@@ -4,12 +4,15 @@ import android.Manifest;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.location.Location;
+import android.media.AudioManager;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.Looper;
@@ -25,20 +28,18 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.GoogleMap;
-
-import static com.google.android.gms.maps.GoogleMap.*;
 
 public class LocationService extends Service{
 
     private static final String TAG = "LocationService";
-    
+
     private FusedLocationProviderClient mFusedLocationClient;
      private final static long UPDATE_INTERVAL = 4 * 1000; /*  4 secs */
     private final static long FASTEST_INTERVAL = 2000;  /*2 sec */
     DatabaseHelper mDatabaseHelper;
-    String address;
+    String address,state;
     float radius;
+    private AudioManager myAudioManager;
 
     @Nullable
     @Override
@@ -51,18 +52,25 @@ public class LocationService extends Service{
         super.onCreate();
         mDatabaseHelper = new DatabaseHelper(this);
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        myAudioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
 
         if (Build.VERSION.SDK_INT >= 26) {
             String CHANNEL_ID = "my_channel_01";
+            Intent activityIntent = new Intent(this,MainActivity.class);
+            PendingIntent contentIntent = PendingIntent.getActivity(this,0,activityIntent,0);
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID,
                     "My Channel",
-                    NotificationManager.IMPORTANCE_DEFAULT);
-
+                    NotificationManager.IMPORTANCE_LOW);
+           // channel.setDescription("Geo Dnd Service");
             ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE)).createNotificationChannel(channel);
 
             Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
-                    .setContentTitle("")
-                    .setContentText("").build();
+                    .setSmallIcon(R.drawable.ic_notifytest)
+                    .setContentTitle("Geo Dnd")
+                    .setContentText("Radar is enable")
+                    .setColor(Color.argb(100,144,111,210))
+                    .setCategory(NotificationCompat.CATEGORY_SERVICE)
+                    .setContentIntent(contentIntent).build();
 
             startForeground(1, notification);
         }
@@ -110,20 +118,33 @@ public class LocationService extends Service{
                                             while (data.moveToNext()) {
                                                 address = data.getString(5);
                                                 radius = data.getInt(4);
-                                                Log.d(TAG, "onLocationResult: addrees" + address);
+                                                state = data.getString(3);
+                                                Log.d(TAG, "onLocationResult: addrees:" + address);
                                                 String[] words = address.split(",");
-                                                Double mLatitude = Double.valueOf(words[0]);
-                                                Double mLongitude = Double.valueOf(words[1]);
-
-                                                float[] distance = new float[1];
+                                                double mLatitude = Double.valueOf(words[0]);
+                                                double mLongitude = Double.parseDouble(words[1]);
+                                                Log.d(TAG, "onLocationResult: current location:" + location.getLatitude() + ", " + location.getLongitude());
+                                                float[] distance = new float[2];
                                                 Location.distanceBetween(location.getLatitude(), location.getLongitude(), mLatitude, mLongitude, distance);
                                                 //Log.d(TAG, "onMyLocationChange: distance" + distance[0] + "," +distance[1]);
                                                 if (distance[0] > radius) {
-                                                    Toast.makeText(getBaseContext(), "Outside, distance from center: " + distance[0] + "Radius:" + radius, Toast.LENGTH_LONG).show();
+                                                   // Toast.makeText(getBaseContext(), "Outside, distance from center: " + distance[0] + "Radius:" + radius, Toast.LENGTH_LONG).show();
                                                     Log.d(TAG, "onMyLocationChange: Outside");
                                                 } else {
-                                                    Toast.makeText(getBaseContext(), "Inside, distance from center: " + distance[0] + "Radius:" + radius, Toast.LENGTH_LONG).show();
+                                                   // Toast.makeText(getBaseContext(), "Inside, distance from center: " + distance[0] + "Radius:" + radius, Toast.LENGTH_LONG).show();
                                                     Log.d(TAG, "onMyLocationChange: Inside");
+                                                    if (state.equals("Silent")){
+                                                        Toast.makeText(LocationService.this,"Silent",Toast.LENGTH_SHORT).show();
+                                                        myAudioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+                                                    }else if(state.equals("Vibrate")){
+                                                        Toast.makeText(LocationService.this,"Vibrate",Toast.LENGTH_SHORT).show();
+                                                        myAudioManager.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
+                                                    }else if (state.equals("DnD")){
+                                                        Toast.makeText(LocationService.this,"DnD",Toast.LENGTH_SHORT).show();
+                                                    }else if (state.equals("General")){
+                                                        Toast.makeText(LocationService.this,"General",Toast.LENGTH_SHORT).show();
+                                                        myAudioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+                                                    }
                                                 }
                                             }
 
