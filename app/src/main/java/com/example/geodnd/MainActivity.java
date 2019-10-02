@@ -15,6 +15,7 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Build;
@@ -53,17 +54,12 @@ public class MainActivity extends AppCompatActivity {
         mDatabaseHelper = new DatabaseHelper(this);
         swipeRefreshLayout = findViewById(R.id.SwipeRefresh);
         startLocationService();
-        NotificationManager notificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
-                && !notificationManager.isNotificationPolicyAccessGranted()) {
+        SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
+        boolean firstStart = prefs.getBoolean("firstStart", true);
 
-            Intent intent = new Intent(
-                    android.provider.Settings
-                            .ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
-
-            startActivity(intent);
+        if (firstStart) {
+            showStartDialog();
         }
 
         //getAccessPermission();
@@ -77,6 +73,38 @@ public class MainActivity extends AppCompatActivity {
                 swipeRefreshLayout.setRefreshing(false);
             }
         });
+    }
+
+    private void showStartDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle("One Time Instruction & Permissions")
+                .setMessage("Please grant this app access to your phone's 'Do Not Disturb' model!\n " +
+                        "You can do this Manually via Settings > Apps & notifications > Special App Access > Do Not Disturb Access > Allow Access for this app \n" +
+                        "- When you come out From the Radius you selected 'PELEASE SELECT PHONE MODE BY YOUR SELF' for eg: Vibrate,Silent,General \n" +
+                        "- For Do Not Disturb Setting you have to set it Manually \n" +
+                        "Enjoy ;)")
+                .setPositiveButton("OPEN ALLOWED APPS LIST", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        NotificationManager notificationManager =
+                                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
+                                && !notificationManager.isNotificationPolicyAccessGranted()) {
+
+                            Intent intent = new Intent(
+                                    android.provider.Settings
+                                            .ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
+
+                            startActivity(intent);
+                        }
+                    }
+                })
+                .create().show();
+        SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putBoolean("firstStart", false);
+        editor.apply();
     }
 
    /* private void getAccessPermission() {

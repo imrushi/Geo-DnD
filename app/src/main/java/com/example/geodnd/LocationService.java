@@ -22,6 +22,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -130,19 +131,22 @@ public class LocationService extends Service{
                                                 if (distance[0] > radius) {
                                                    // Toast.makeText(getBaseContext(), "Outside, distance from center: " + distance[0] + "Radius:" + radius, Toast.LENGTH_LONG).show();
                                                     Log.d(TAG, "onMyLocationChange: Outside");
+                                                    //myAudioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
                                                 } else {
                                                    // Toast.makeText(getBaseContext(), "Inside, distance from center: " + distance[0] + "Radius:" + radius, Toast.LENGTH_LONG).show();
                                                     Log.d(TAG, "onMyLocationChange: Inside");
                                                     if (state.equals("Silent")){
-                                                        Toast.makeText(LocationService.this,"Silent",Toast.LENGTH_SHORT).show();
+                                                        //Toast.makeText(LocationService.this,"Silent",Toast.LENGTH_SHORT).show();
                                                         myAudioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
                                                     }else if(state.equals("Vibrate")){
-                                                        Toast.makeText(LocationService.this,"Vibrate",Toast.LENGTH_SHORT).show();
+                                                        //Toast.makeText(LocationService.this,"Vibrate",Toast.LENGTH_SHORT).show();
                                                         myAudioManager.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
                                                     }else if (state.equals("DnD")){
-                                                        Toast.makeText(LocationService.this,"DnD",Toast.LENGTH_SHORT).show();
+                                                       // Toast.makeText(LocationService.this,"DnD",Toast.LENGTH_SHORT).show();
+                                                        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                                                        mNotificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_NONE);
                                                     }else if (state.equals("General")){
-                                                        Toast.makeText(LocationService.this,"General",Toast.LENGTH_SHORT).show();
+                                                       // Toast.makeText(LocationService.this,"General",Toast.LENGTH_SHORT).show();
                                                         myAudioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
                                                     }
                                                 }
@@ -158,4 +162,6 @@ public class LocationService extends Service{
                 },
                 Looper.myLooper()); // Looper.myLooper tells this to repeat forever until thread is destroyed
     }
+
+
 }

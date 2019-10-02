@@ -32,7 +32,7 @@ public class InfoFillActivity extends AppCompatActivity implements CompoundButto
     int year;
     int month;
     int day;
-    Calendar calendar;
+    Calendar c;
     String drd = "Daily";
     private static final String TAG = "InfoFillActivity";
 
@@ -70,16 +70,16 @@ public class InfoFillActivity extends AppCompatActivity implements CompoundButto
     }*/
     // Calander button
     public void pickDate(View view) {
-        calendar = Calendar.getInstance();
-        year = calendar.get(Calendar.YEAR);
-        month = calendar.get(Calendar.MONTH);
-        day = calendar.get(Calendar.DAY_OF_MONTH);
+        c = Calendar.getInstance();
+        year = c.get(Calendar.YEAR);
+        month = c.get(Calendar.MONTH);
+        day = c.get(Calendar.DAY_OF_MONTH);
 
         datePickerDialog = new DatePickerDialog(InfoFillActivity.this,
                 new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                        etDate.setText(dayOfMonth + "/" + month + "/" + year);
+                        etDate.setText(dayOfMonth + "/" + (month + 1) + "/" + year);
                     }
                 }, year, month, day);
         datePickerDialog.show();
@@ -92,6 +92,7 @@ public class InfoFillActivity extends AppCompatActivity implements CompoundButto
         Log.d(TAG, "Gmap: setRadius:"+setRadius);
         Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
         intent.putExtra("setRadius",setRadius);
+        intent.putExtra("fromInfo","Info");
         startActivity(intent);
     }
 

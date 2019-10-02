@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -188,18 +189,34 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onMapLongClick(LatLng latLng) {
+        String in ="";
         NumberFormat formatter = new DecimalFormat("#0.0000");
         String lat = formatter.format(latLng.latitude);
         String lon = formatter.format(latLng.longitude);
 
         Intent recivedIntent = getIntent();
         float setRadius = Float.parseFloat(recivedIntent.getStringExtra("setRadius"));
+
+        in = recivedIntent.getStringExtra("fromInfo");
+        String ch = "";
         Log.d(TAG, "onMapLongClick: setRadius:"+ setRadius);
 
         address = lat + "," + lon;
+        if (in.equals("Info")){
+                ch = "Info";
+            }
+            else{
+                ch = "Edit";
+            }
 
-        InfoFillActivity.etLocName.setText(address);
-  //      EditDataActivity.etLocName.setText(address);
+            switch(ch) {
+                case "Info":
+                    InfoFillActivity.etLocName.setText(address);
+                    break;
+            case "Edit":
+                EditDataActivity.etLocName.setText(address);
+                break;
+        }
 
         Toast.makeText(this,"Location Saved", Toast.LENGTH_SHORT).show();
 

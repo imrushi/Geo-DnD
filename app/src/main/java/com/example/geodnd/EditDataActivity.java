@@ -82,7 +82,7 @@ public class EditDataActivity extends AppCompatActivity implements CompoundButto
                 new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                        etDate.setText(dayOfMonth + "/" + month + "/" + year);
+                        etDate.setText(dayOfMonth + "/" + (month + 1) + "/" + year);
                     }
                 }, year, month, day);
         datePickerDialog.show();
@@ -94,6 +94,7 @@ public class EditDataActivity extends AppCompatActivity implements CompoundButto
         Log.d(TAG, "Gmap: setRadius:"+setRadius);
         Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
         intent.putExtra("setRadius",setRadius);
+        intent.putExtra("fromInfo","Edit");
         startActivity(intent);
     }
 
