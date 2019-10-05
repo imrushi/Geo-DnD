@@ -31,6 +31,7 @@ public class EditDataActivity extends AppCompatActivity implements CompoundButto
     private String selectedName,selectedState,selectedLatlong,selectedDD;
     private int selectedID,selectedRadius;
     String dailydate;
+    SharedPref sharedpref;
 
     DatePickerDialog datePickerDialog;
     int year;
@@ -99,6 +100,11 @@ public class EditDataActivity extends AppCompatActivity implements CompoundButto
     }
 
     protected void onCreate(Bundle savedInstanceState) {
+        sharedpref = new SharedPref(this);
+        if(sharedpref.loadNightModeState()==true) {
+            setTheme(R.style.darktheme);
+        }
+        else  setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.edit_data_layout);
 
@@ -197,6 +203,13 @@ public class EditDataActivity extends AppCompatActivity implements CompoundButto
                 //MainActivity.adapter.notify();
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+        finish();
+        startActivity(intent);
     }
 
 }

@@ -1,9 +1,11 @@
 package com.example.geodnd;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -18,16 +20,24 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.CompoundButton;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -41,19 +51,27 @@ public class MainActivity extends AppCompatActivity {
     DatabaseHelper mDatabaseHelper;
     static ListAdapter madapter;
     private ListView mListView;
-    SwipeRefreshLayout swipeRefreshLayout;
+   // SwipeRefreshLayout swipeRefreshLayout;
+   // private Switch myswitch;
+    SharedPref sharedpref;
 
     private static final String TAG = "MainActivity";
     private static final int ERROR_DIALOG_REQUEST = 9001;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        sharedpref = new SharedPref(this);
+        if(sharedpref.loadNightModeState()==true) {
+            setTheme(R.style.darktheme);
+        }
+        else  setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //setContentView(R.layout.activity_settings);
+        startLocationService();
         mListView = (ListView)findViewById(R.id.lvToDoList);
         mDatabaseHelper = new DatabaseHelper(this);
-        swipeRefreshLayout = findViewById(R.id.SwipeRefresh);
-        startLocationService();
+      //  swipeRefreshLayout = findViewById(R.id.SwipeRefresh);
 
         SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
         boolean firstStart = prefs.getBoolean("firstStart", true);
@@ -66,13 +84,46 @@ public class MainActivity extends AppCompatActivity {
 
         populateListView();
 
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+      /*  swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 populateListView();
                 swipeRefreshLayout.setRefreshing(false);
             }
-        });
+        });*/
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_setting, menu);
+
+        return true;
+    }
+
+  /*  Switch aSwitch = findViewById(R.id.bar_switch);
+
+        aSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            if (isChecked){
+                getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            }else {
+                getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+            }
+        }
+    });*/
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.settings:
+                Intent intent = new Intent(getApplicationContext(), Settings.class);
+                startActivity(intent);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void showStartDialog() {
@@ -184,7 +235,26 @@ public class MainActivity extends AppCompatActivity {
             listData.add(data.getString(1));
         }
         //create the list adapter and set the adapter
-        madapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,listData);
+        madapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,listData){
+            @NonNull
+            @Override
+            public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+                // Get the Item from ListView
+                View view = super.getView(position, convertView, parent);
+
+                // Initialize a TextView for ListView each Item
+                TextView tv = (TextView) view.findViewById(android.R.id.text1);
+                if(sharedpref.loadNightModeState()==true) {
+                    tv.setTextColor(Color.WHITE);
+                }
+                else  tv.setTextColor(Color.BLACK);
+                // Set the text color of TextView (ListView Item)
+
+
+                // Generate ListView Item using TextView
+                return view;
+            }
+        };
         mListView.setAdapter(madapter);
 
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

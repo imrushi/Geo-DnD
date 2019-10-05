@@ -1,6 +1,7 @@
 package com.example.geodnd;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ public class CustomAdapter extends ArrayAdapter<String> {
     Context context;
     String[] states;
     int[] icons;
+    SharedPref sharedpref;
 
     public CustomAdapter(@NonNull Context context, String[] states, int[] icons) {
         super(context, R.layout.spinner_layout, states);
@@ -41,6 +43,7 @@ public class CustomAdapter extends ArrayAdapter<String> {
     }
 
     public View getView(int position, View convertView, ViewGroup parent){
+        sharedpref = new SharedPref(getContext());
 
         LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View row = inflater.inflate(R.layout.spinner_layout,null);
@@ -50,7 +53,16 @@ public class CustomAdapter extends ArrayAdapter<String> {
         t1.setText(states[position]);
         i1.setImageResource(icons[position]);
 
-        return row;
+        if(sharedpref.loadNightModeState()==true) {
+            t1.setTextColor(Color.WHITE);
+            i1.setColorFilter(Color.WHITE);
+        }
+        else {
+            t1.setTextColor(Color.BLACK);
+            i1.setColorFilter(Color.BLACK);
+        }
+
+            return row;
     }
 }
 

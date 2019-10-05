@@ -28,6 +28,7 @@ public class InfoFillActivity extends AppCompatActivity implements CompoundButto
     Button selectDate,Save;
     DatePickerDialog datePickerDialog;
     Switch dateSwitch;
+    SharedPref sharedpref;
 
     int year;
     int month;
@@ -98,6 +99,11 @@ public class InfoFillActivity extends AppCompatActivity implements CompoundButto
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        sharedpref = new SharedPref(this);
+        if(sharedpref.loadNightModeState()==true) {
+            setTheme(R.style.darktheme);
+        }
+        else  setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_info_fill);
 
@@ -174,5 +180,12 @@ public class InfoFillActivity extends AppCompatActivity implements CompoundButto
       //          MainActivity.madapter.notifyDataSetChanged();
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+        finish();
+        startActivity(intent);
     }
 }
