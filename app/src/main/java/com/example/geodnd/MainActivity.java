@@ -121,6 +121,7 @@ public class MainActivity extends AppCompatActivity {
             case R.id.settings:
                 Intent intent = new Intent(getApplicationContext(), Settings.class);
                 startActivity(intent);
+                MainActivity.this.finish();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -215,10 +216,10 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void fabClick(View view){
-
         Intent intent = new Intent(getApplicationContext(), InfoFillActivity.class);
 
         startActivity(intent);
+        MainActivity.this.finish();
 
     }
 
@@ -293,6 +294,26 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+    }
+
+    @Override
+    public void onBackPressed() {
+        new AlertDialog.Builder(this)
+                .setTitle("Exit App")
+                .setMessage("Are you sure you want to exit?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        MainActivity.this.finish();
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                }).create().show();
 
     }
 

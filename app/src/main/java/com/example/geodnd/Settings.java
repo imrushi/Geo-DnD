@@ -52,5 +52,7 @@ public class Settings extends AppCompatActivity {
         Intent intent = new Intent(getApplicationContext(),MainActivity.class);
         finish();
         startActivity(intent);
+
     }
+
 }
