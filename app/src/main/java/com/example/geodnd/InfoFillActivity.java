@@ -80,7 +80,8 @@ public class InfoFillActivity extends AppCompatActivity implements CompoundButto
                 new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                        etDate.setText(dayOfMonth + "/" + (month + 1) + "/" + year);
+                        etDate.setText(dayOfMonth + "-" + (month + 1) + "-" + year);
+                        drd = year + "-" + (month + 1) + "-" + dayOfMonth;
                     }
                 }, year, month, day);
         datePickerDialog.show();

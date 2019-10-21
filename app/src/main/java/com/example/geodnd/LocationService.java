@@ -41,6 +41,7 @@ public class LocationService extends Service{
     String address,state;
     float radius;
     private AudioManager myAudioManager;
+    int flag =0;
 
     @Nullable
     @Override
@@ -112,7 +113,7 @@ public class LocationService extends Service{
                         Location location = locationResult.getLastLocation();
 
                         if (location != null) {
-                            try {
+                           // try {
 
 
                                             Cursor data = mDatabaseHelper.getLatlon();
@@ -131,10 +132,15 @@ public class LocationService extends Service{
                                                 if (distance[0] > radius) {
                                                    // Toast.makeText(getBaseContext(), "Outside, distance from center: " + distance[0] + "Radius:" + radius, Toast.LENGTH_LONG).show();
                                                     Log.d(TAG, "onMyLocationChange: Outside");
-                                                    //myAudioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+                                                    if (flag == 1){
+                                                        flag = 0;
+                                                        myAudioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+                                                    }
+
                                                 } else {
                                                    // Toast.makeText(getBaseContext(), "Inside, distance from center: " + distance[0] + "Radius:" + radius, Toast.LENGTH_LONG).show();
                                                     Log.d(TAG, "onMyLocationChange: Inside");
+                                                    flag =1;
                                                     if (state.equals("Silent")){
                                                         //Toast.makeText(LocationService.this,"Silent",Toast.LENGTH_SHORT).show();
                                                         myAudioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
@@ -154,9 +160,9 @@ public class LocationService extends Service{
 
 
 
-                            }catch (Exception e){
-                                e.printStackTrace();
-                            }
+                           // }catch (Exception e){
+                           //     e.printStackTrace();
+                           // }
                         }
                     }
                 },

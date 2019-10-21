@@ -60,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        startLocationService();
         sharedpref = new SharedPref(this);
         if(sharedpref.loadNightModeState()==true) {
             setTheme(R.style.darktheme);
@@ -68,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         //setContentView(R.layout.activity_settings);
-        startLocationService();
+
         mListView = (ListView)findViewById(R.id.lvToDoList);
         mDatabaseHelper = new DatabaseHelper(this);
       //  swipeRefreshLayout = findViewById(R.id.SwipeRefresh);
