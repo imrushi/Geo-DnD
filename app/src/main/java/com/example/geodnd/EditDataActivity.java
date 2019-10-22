@@ -47,31 +47,6 @@ public class EditDataActivity extends AppCompatActivity implements CompoundButto
     String[] states = {"General", "Silent", "Vibrate", "DnD"};
     int[] icons = {R.drawable.ic_general,R.drawable.ic_silent,R.drawable.ic_vibrate,R.drawable.ic_dnd};
 
-    // select Daily or Date
-  /*  public void checkButton(View view){
-
-        int radioId = radioGroup.getCheckedRadioButtonId();
-        rbButton = (RadioButton) findViewById(radioId);
-        boolean dailyDate = ((RadioButton) view).isChecked();
-
-
-        switch (view.getId()){
-            case R.id.rbDate:
-                etDate.setVisibility(View.VISIBLE);
-                selectDate.setVisibility(View.VISIBLE);
-            //    if (dailyDate)
-              //      drd = etDate.getText().toString();
-                break;
-
-            case R.id.rbDaily:
-                etDate.setVisibility(View.INVISIBLE);
-                selectDate.setVisibility(View.INVISIBLE);
-              //  if (dailyDate)
-                //    drd = "Daily";
-                break;
-        }
-
-    }*/
     // Calander button
     public void pickDate(View view) {
         calendar = Calendar.getInstance();

@@ -38,10 +38,10 @@ public class LocationService extends Service{
      private final static long UPDATE_INTERVAL = 4 * 1000; /*  4 secs */
     private final static long FASTEST_INTERVAL = 2000;  /*2 sec */
     DatabaseHelper mDatabaseHelper;
-    String address,state;
+    String address,state,name;
     float radius;
     private AudioManager myAudioManager;
-    int flag =0;
+    int flag,id;
 
     @Nullable
     @Override
@@ -55,6 +55,7 @@ public class LocationService extends Service{
         mDatabaseHelper = new DatabaseHelper(this);
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         myAudioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
+        mDatabaseHelper = new DatabaseHelper(this);
 
         if (Build.VERSION.SDK_INT >= 26) {
             String CHANNEL_ID = "my_channel_01";
@@ -113,11 +114,12 @@ public class LocationService extends Service{
                         Location location = locationResult.getLastLocation();
 
                         if (location != null) {
-                           // try {
-
 
                                             Cursor data = mDatabaseHelper.getLatlon();
                                             while (data.moveToNext()) {
+                                                id = data.getInt(0);
+                                                name = data.getString(1);
+                                                flag = data.getInt(6);
                                                 address = data.getString(5);
                                                 radius = data.getInt(4);
                                                 state = data.getString(3);
@@ -132,37 +134,39 @@ public class LocationService extends Service{
                                                 if (distance[0] > radius) {
                                                    // Toast.makeText(getBaseContext(), "Outside, distance from center: " + distance[0] + "Radius:" + radius, Toast.LENGTH_LONG).show();
                                                     Log.d(TAG, "onMyLocationChange: Outside");
-                                                    if (flag == 1){
-                                                        flag = 0;
+                                                    if (flag == 3){
+                                                        //flag 3 is for outside
+                                                        Log.d(TAG, "onLocationResult: ouside flag = "+ flag);
+                                                    } else if (flag == 1)
+                                                    {
+                                                        flag = 3;
+                                                        mDatabaseHelper.updateFlag(name,flag,id);
+                                                        Log.d(TAG, "onLocationResult: update flag for outside!!!");
                                                         myAudioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
                                                     }
 
                                                 } else {
-                                                   // Toast.makeText(getBaseContext(), "Inside, distance from center: " + distance[0] + "Radius:" + radius, Toast.LENGTH_LONG).show();
                                                     Log.d(TAG, "onMyLocationChange: Inside");
-                                                    flag =1;
+                                                   // flag =1;
+                                                    if (flag == 3 ){
+                                                        flag = 1;
+                                                        mDatabaseHelper.updateFlag(name,flag,id);
+                                                        Log.d(TAG, "onLocationResult: Flag update successfully!!!");
+                                                    }
+
                                                     if (state.equals("Silent")){
-                                                        //Toast.makeText(LocationService.this,"Silent",Toast.LENGTH_SHORT).show();
                                                         myAudioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
                                                     }else if(state.equals("Vibrate")){
-                                                        //Toast.makeText(LocationService.this,"Vibrate",Toast.LENGTH_SHORT).show();
                                                         myAudioManager.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
                                                     }else if (state.equals("DnD")){
-                                                       // Toast.makeText(LocationService.this,"DnD",Toast.LENGTH_SHORT).show();
                                                         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                                                         mNotificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_NONE);
                                                     }else if (state.equals("General")){
-                                                       // Toast.makeText(LocationService.this,"General",Toast.LENGTH_SHORT).show();
                                                         myAudioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
                                                     }
                                                 }
                                             }
 
-
-
-                           // }catch (Exception e){
-                           //     e.printStackTrace();
-                           // }
                         }
                     }
                 },

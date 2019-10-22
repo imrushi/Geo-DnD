@@ -21,6 +21,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String pState = "pState";
     private static final String Radius = "Radius";
     private static final String Latlong = "Latlong";
+    public static final String Flag = "Flag";
 
     public DatabaseHelper(Context context) {
         super(context , TABLE_NAME , null ,1);
@@ -28,7 +29,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String createTable = "CREATE TABLE " + TABLE_NAME + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, " +  TaskName + " TEXT, " + Date + " TEXT, " + pState + " TEXT, " + Radius + " INTEGER, " + Latlong + " TEXT);";
+        String createTable = "CREATE TABLE " + TABLE_NAME + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, " +  TaskName + " TEXT, " + Date + " TEXT, " + pState + " TEXT, " + Radius + " INTEGER, " + Latlong + " TEXT, " + Flag + " INTEGER );";
         db.execSQL(createTable);
     }
 
@@ -38,7 +39,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public boolean addData(String item,String dd, String state,int rad,String loc)
+    public boolean addData(String item,String dd, String state,int rad,String loc,int fla)
     {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -47,8 +48,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(pState ,state);
         contentValues.put(Radius ,rad);
         contentValues.put(Latlong ,loc);
+        contentValues.put(Flag,fla);
 
         Log.d(TAG, "addData: Adding " + item + " to " + TABLE_NAME);
+        Log.d(TAG, "addData: Flag value" + fla);
 
         long result = db.insert(TABLE_NAME, null, contentValues);
 
@@ -92,6 +95,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
        // String query = "UPDATE " + TABLE_NAME + " SET "+ TaskName + " = '" + item + "' WHERE " + COL1 + " = '" + id + "'" + " AND " + TaskName + " = '"+ oldName + "'";
         Log.d(TAG, "updateName: query:" + query);
         Log.d(TAG, "updateName: Setting name to " + item);
+        db.execSQL(query);
+    }
+
+    public void updateFlag(String old_name,int fla,int id)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "UPDATE " + TABLE_NAME + " SET "+ Flag + " = '" + fla +"' WHERE " + COL1 + " = '" + id + "'" + " AND " + TaskName + " = '"+ old_name + "'";
+        Log.d(TAG, "updateFlag: query:" + query);
+        Log.d(TAG, "updateFlag: Setting Flag= " + fla);
         db.execSQL(query);
     }
 

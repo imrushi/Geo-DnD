@@ -238,28 +238,5 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .strokeColor(Color.RED)
                 .fillColor(Color.argb(70,150,50,50)));
 
-      /*  try {
-            String[] words=address.split(",");
-            Double mLatitude = Double.valueOf(words[0]);
-            Double mLongitude = Double.valueOf(words[1]);
-
-            mMap.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
-                @Override
-                public void onMyLocationChange(Location location) {
-                    float[] distance = new float[2];
-                    Location.distanceBetween(location.getLatitude(),location.getLongitude(),marker1.getCenter().latitude,marker1.getCenter().longitude, distance);
-
-                    if( distance[0] > marker1.getRadius()  ){
-                        Toast.makeText(getBaseContext(), "Outside, distance from center: " + distance[0] + " radius: " + marker1.getRadius(), Toast.LENGTH_LONG).show();
-                    } else {
-                        Toast.makeText(getBaseContext(), "Inside, distance from center: " + distance[0] + " radius: " + marker1.getRadius() , Toast.LENGTH_LONG).show();
-                    }
-                }
-            });
-
-
-        }catch (Exception e){
-            e.printStackTrace();
-        }*/
     }
 }

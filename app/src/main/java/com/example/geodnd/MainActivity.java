@@ -51,8 +51,6 @@ public class MainActivity extends AppCompatActivity {
     DatabaseHelper mDatabaseHelper;
     static ListAdapter madapter;
     private ListView mListView;
-   // SwipeRefreshLayout swipeRefreshLayout;
-   // private Switch myswitch;
     SharedPref sharedpref;
 
     private static final String TAG = "MainActivity";
@@ -81,17 +79,8 @@ public class MainActivity extends AppCompatActivity {
             showStartDialog();
         }
 
-        //getAccessPermission();
-
         populateListView();
 
-      /*  swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                populateListView();
-                swipeRefreshLayout.setRefreshing(false);
-            }
-        });*/
     }
 
 
@@ -102,19 +91,6 @@ public class MainActivity extends AppCompatActivity {
 
         return true;
     }
-
-  /*  Switch aSwitch = findViewById(R.id.bar_switch);
-
-        aSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-        @Override
-        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-            if (isChecked){
-                getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-            }else {
-                getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-            }
-        }
-    });*/
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -133,7 +109,6 @@ public class MainActivity extends AppCompatActivity {
                 .setTitle("One Time Instruction & Permissions")
                 .setMessage("Please grant this app access to your phone's 'Do Not Disturb' model!\n " +
                         "You can do this Manually via Settings > Apps & notifications > Special App Access > Do Not Disturb Access > Allow Access for this app \n" +
-                        "- When you come out From the Radius you selected 'PELEASE SELECT PHONE MODE BY YOUR SELF' for eg: Vibrate,Silent,General \n" +
                         "- For Do Not Disturb Setting you have to set it Manually \n" +
                         "Enjoy ;)")
                 .setPositiveButton("OPEN ALLOWED APPS LIST", new DialogInterface.OnClickListener() {
@@ -159,35 +134,6 @@ public class MainActivity extends AppCompatActivity {
         editor.putBoolean("firstStart", false);
         editor.apply();
     }
-
-   /* private void getAccessPermission() {
-        Log.d(TAG, "getAccessPermission: Notification permission");
-        //String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION,
-          //      Manifest.permission.ACCESS_COARSE_LOCATION};
-        AlertDialog.Builder builder=new AlertDialog.Builder(this);
-        builder.setTitle("Permissions");
-        builder.setMessage("Give Prmission for auto DND & other modes:");
-        builder.setPositiveButton("Asscess", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                NotificationManager notificationManager =
-                        (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
-                        && !notificationManager.isNotificationPolicyAccessGranted()) {
-
-                    Intent intent = new Intent(
-                            android.provider.Settings
-                                    .ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
-
-                    startActivity(intent);
-                }
-            }
-        });
-        AlertDialog dialog = builder.create();
-        dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_DIALOG);
-        dialog.show();
-    }*/
 
     private void startLocationService(){
         if(!isLocationServiceRunning()){

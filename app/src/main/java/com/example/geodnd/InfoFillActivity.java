@@ -43,32 +43,7 @@ public class InfoFillActivity extends AppCompatActivity implements CompoundButto
     String[] states = {"General", "Silent", "Vibrate", "DnD"};
     int[] icons = {R.drawable.ic_general,R.drawable.ic_silent,R.drawable.ic_vibrate,R.drawable.ic_dnd};
 
-    // select Daily or Date
-  /*  public void checkButton(View view){
 
-        int radioId = radioGroup.getCheckedRadioButtonId();
-        rbButton = (RadioButton) findViewById(radioId);
-
-        //boolean dailyDate = ((RadioButton) view).isChecked();
-
-        switch (view.getId()){
-            case R.id.rbDate:
-                //etDate.setVisibility(View.VISIBLE);
-               // selectDate.setVisibility(View.VISIBLE);
-               // if (rbButton.getText().equals(dat))
-               //    drd = etDate.getText().toString();
-                //Log.d(TAG, "checkButton: "+ drd);
-                break;
-
-            case R.id.rbDaily:
-                //etDate.setVisibility(View.INVISIBLE);
-               // selectDate.setVisibility(View.INVISIBLE);
-               // if (rbButton.getText().equals(da))
-                    drd = "Daily";
-                Log.d(TAG, "checkButton: "+ drd);
-                break;
-        }
-    }*/
     // Calander button
     public void pickDate(View view) {
         c = Calendar.getInstance();
@@ -169,8 +144,9 @@ public class InfoFillActivity extends AppCompatActivity implements CompoundButto
                 String state = dropDown.getSelectedItem().toString();
                 int radius = Integer.parseInt(etRadius.getText().toString());
                 String loc = etLocName.getText().toString();
-                Log.d(TAG, "onClick: "+ newName + " ," + dd + " ,"+ state + " ,"+ radius + " ,"+ loc );
-                boolean insertData = mDatabaseHelper.addData(newName,dd,state,radius,loc);
+                int fla = 3;
+                Log.d(TAG, "onClick: "+ newName + " ," + dd + " ,"+ state + " ,"+ radius + " ,"+ loc +" ,"+fla);
+                boolean insertData = mDatabaseHelper.addData(newName,dd,state,radius,loc,fla);
 
                 if (insertData){
                     Toast.makeText(InfoFillActivity.this,"Data Successfully Inserted!",Toast.LENGTH_SHORT).show();
