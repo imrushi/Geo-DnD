@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_content"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -9,22 +9,35 @@
     android:orientation="vertical"
     android:background="?attr/backgroundcolor">
 
-    <androidx.cardview.widget.CardView
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/adView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/cardvi"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="5dp"
+        app:adSize="SMART_BANNER"
+        app:adUnitId="ca-app-pub-3940256099942544/6300978111"></com.google.android.gms.ads.AdView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardvi"
+        android:layout_width="wrap_content"
+        android:layout_height="629dp"
         app:cardBackgroundColor="?attr/cardbackground"
         app:cardCornerRadius="15dp"
         app:cardElevation="10dp">
 
-                <ListView
-                    android:id="@+id/lvToDoList"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:scrollbars="none"></ListView>
+        <ListView
+            android:id="@+id/lvToDoList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="none"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+        </ListView>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab"
@@ -37,7 +50,8 @@
             app:backgroundTint="#7E52C7"
             app:layout_anchor="@id/lvToDoList"
             app:layout_anchorGravity="bottom|right|end" />
+
+
     </androidx.cardview.widget.CardView>
 
-
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</RelativeLayout>

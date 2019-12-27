@@ -153,16 +153,16 @@ public class EditDataActivity extends AppCompatActivity implements CompoundButto
                 else {
                     dailydate = "Daily";
                 }
-               String state = dropDown.getSelectedItem().toString();
-               int rad = Integer.parseInt(etRadius.getText().toString());
-               String item = etNameTask.getText().toString();
-               // String rad = etRadius.getText().toString();
-               String loc = etLocName.getText().toString();
-               // && rad != 0 && !loc.equals("")
+                String state = dropDown.getSelectedItem().toString();
+                int rad = Integer.parseInt(etRadius.getText().toString());
+                String item = etNameTask.getText().toString();
+                // String rad = etRadius.getText().toString();
+                String loc = etLocName.getText().toString();
+                // && rad != 0 && !loc.equals("")
                 if (!item.equals("") ){
                     mDatabaseHelper.updateName(item,selectedID,selectedName,dailydate,state,rad,loc);
                     Toast.makeText(EditDataActivity.this,"Data updated Successfully!!",Toast.LENGTH_SHORT).show();
-                   // MainActivity.adapter.notify();
+                    // MainActivity.adapter.notify();
                 }else {
                     Toast.makeText(EditDataActivity.this,"You must fill all fields",Toast.LENGTH_SHORT).show();
                 }

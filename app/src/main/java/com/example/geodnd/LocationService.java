@@ -35,7 +35,7 @@ public class LocationService extends Service{
     private static final String TAG = "LocationService";
 
     private FusedLocationProviderClient mFusedLocationClient;
-     private final static long UPDATE_INTERVAL = 4 * 1000; /*  4 secs */
+    private final static long UPDATE_INTERVAL = 4 * 1000; /*  4 secs */
     private final static long FASTEST_INTERVAL = 2000;  /*2 sec */
     DatabaseHelper mDatabaseHelper;
     String address,state,name;
@@ -64,7 +64,7 @@ public class LocationService extends Service{
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID,
                     "My Channel",
                     NotificationManager.IMPORTANCE_LOW);
-           // channel.setDescription("Geo Dnd Service");
+            // channel.setDescription("Geo Dnd Service");
             ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE)).createNotificationChannel(channel);
 
             Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
@@ -115,57 +115,57 @@ public class LocationService extends Service{
 
                         if (location != null) {
 
-                                            Cursor data = mDatabaseHelper.getLatlon();
-                                            while (data.moveToNext()) {
-                                                id = data.getInt(0);
-                                                name = data.getString(1);
-                                                flag = data.getInt(6);
-                                                address = data.getString(5);
-                                                radius = data.getInt(4);
-                                                state = data.getString(3);
-                                                Log.d(TAG, "onLocationResult: addrees:" + address);
-                                                String[] words = address.split(",");
-                                                double mLatitude = Double.valueOf(words[0]);
-                                                double mLongitude = Double.parseDouble(words[1]);
-                                                Log.d(TAG, "onLocationResult: current location:" + location.getLatitude() + ", " + location.getLongitude());
-                                                float[] distance = new float[2];
-                                                Location.distanceBetween(location.getLatitude(), location.getLongitude(), mLatitude, mLongitude, distance);
-                                                //Log.d(TAG, "onMyLocationChange: distance" + distance[0] + "," +distance[1]);
-                                                if (distance[0] > radius) {
-                                                   // Toast.makeText(getBaseContext(), "Outside, distance from center: " + distance[0] + "Radius:" + radius, Toast.LENGTH_LONG).show();
-                                                    Log.d(TAG, "onMyLocationChange: Outside");
-                                                    if (flag == 3){
-                                                        //flag 3 is for outside
-                                                        Log.d(TAG, "onLocationResult: ouside flag = "+ flag);
-                                                    } else if (flag == 1)
-                                                    {
-                                                        flag = 3;
-                                                        mDatabaseHelper.updateFlag(name,flag,id);
-                                                        Log.d(TAG, "onLocationResult: update flag for outside!!!");
-                                                        myAudioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
-                                                    }
+                            Cursor data = mDatabaseHelper.getLatlon();
+                            while (data.moveToNext()) {
+                                id = data.getInt(0);
+                                name = data.getString(1);
+                                flag = data.getInt(6);
+                                address = data.getString(5);
+                                radius = data.getInt(4);
+                                state = data.getString(3);
+                                Log.d(TAG, "onLocationResult: addrees:" + address);
+                                String[] words = address.split(",");
+                                double mLatitude = Double.valueOf(words[0]);
+                                double mLongitude = Double.parseDouble(words[1]);
+                                Log.d(TAG, "onLocationResult: current location:" + location.getLatitude() + ", " + location.getLongitude());
+                                float[] distance = new float[2];
+                                Location.distanceBetween(location.getLatitude(), location.getLongitude(), mLatitude, mLongitude, distance);
+                                //Log.d(TAG, "onMyLocationChange: distance" + distance[0] + "," +distance[1]);
+                                if (distance[0] > radius) {
+                                    // Toast.makeText(getBaseContext(), "Outside, distance from center: " + distance[0] + "Radius:" + radius, Toast.LENGTH_LONG).show();
+                                    Log.d(TAG, "onMyLocationChange: Outside");
+                                    if (flag == 3){
+                                        //flag 3 is for outside
+                                        Log.d(TAG, "onLocationResult: ouside flag = "+ flag);
+                                    } else if (flag == 1)
+                                    {
+                                        flag = 3;
+                                        mDatabaseHelper.updateFlag(name,flag,id);
+                                        Log.d(TAG, "onLocationResult: update flag for outside!!!");
+                                        myAudioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+                                    }
 
-                                                } else {
-                                                    Log.d(TAG, "onMyLocationChange: Inside");
-                                                   // flag =1;
-                                                    if (flag == 3 ){
-                                                        flag = 1;
-                                                        mDatabaseHelper.updateFlag(name,flag,id);
-                                                        Log.d(TAG, "onLocationResult: Flag update successfully!!!");
-                                                    }
+                                } else {
+                                    Log.d(TAG, "onMyLocationChange: Inside");
+                                    // flag =1;
+                                    if (flag == 3 ){
+                                        flag = 1;
+                                        mDatabaseHelper.updateFlag(name,flag,id);
+                                        Log.d(TAG, "onLocationResult: Flag update successfully!!!");
+                                    }
 
-                                                    if (state.equals("Silent")){
-                                                        myAudioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
-                                                    }else if(state.equals("Vibrate")){
-                                                        myAudioManager.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
-                                                    }else if (state.equals("DnD")){
-                                                        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                                                        mNotificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_NONE);
-                                                    }else if (state.equals("General")){
-                                                        myAudioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
-                                                    }
-                                                }
-                                            }
+                                    if (state.equals("Silent")){
+                                        myAudioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+                                    }else if(state.equals("Vibrate")){
+                                        myAudioManager.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
+                                    }else if (state.equals("DnD")){
+                                        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                                        mNotificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_NONE);
+                                    }else if (state.equals("General")){
+                                        myAudioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+                                    }
+                                }
+                            }
 
                         }
                     }

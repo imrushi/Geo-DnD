@@ -154,7 +154,7 @@ public class InfoFillActivity extends AppCompatActivity implements CompoundButto
                 {
                     Toast.makeText(InfoFillActivity.this,"Something went Wrong!",Toast.LENGTH_SHORT).show();
                 }
-      //          MainActivity.madapter.notifyDataSetChanged();
+                //          MainActivity.madapter.notifyDataSetChanged();
             }
         });
     }
